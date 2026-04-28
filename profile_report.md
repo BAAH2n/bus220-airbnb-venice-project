@@ -1,5 +1,5 @@
 # Data Profile Report — Venice Airbnb
-_Generated: 2026-04-28 15:41_
+_Generated: 2026-04-28 16:02_
 
 ## Listings
 - Rows total: **25090**
@@ -9,79 +9,72 @@ _Generated: 2026-04-28 15:41_
 - Unique hosts (`host_id`): 3920
 
 ### Scrape overlap
-# A tibble: 3 × 3
-  appears_in n_listings label      
-       <int>      <int> <chr>      
-1          1        809 in one only
-2          2        442 in both    
-3          3       7799 in one only
+| appears_in| n_listings|label       |
+|----------:|----------:|:-----------|
+|          1|        809|in one only |
+|          2|        442|in both     |
+|          3|       7799|in one only |
 
 ### Price distribution after cleaning
-# A tibble: 1 × 9
-  n_with_price   min   p25 median  mean   p75   p95   p99   max
-         <int> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-1        22224    10   111    155  233.   224   500  1195 14264
+| n_with_price| min| p25| median|     mean| p75| p95|  p99|   max|
+|------------:|---:|---:|------:|--------:|---:|---:|----:|-----:|
+|        22224|  10| 111|    155| 232.8427| 224| 500| 1195| 14264|
 
 ### NULL-rates (% null) for key fields
-# A tibble: 14 × 2
-   field                        pct_null
-   <chr>                           <dbl>
- 1 calendar_updated                100  
- 2 price                            11.4
- 3 estimated_revenue_l365d          11.4
- 4 host_response_rate               11  
- 5 review_scores_rating              9  
- 6 review_scores_cleanliness         9  
- 7 review_scores_location            9  
- 8 host_acceptance_rate              5.8
- 9 license                           5.7
-10 bathrooms_text                    0.1
-11 estimated_occupancy_l365d         0  
-12 neighbourhood_cleansed            0  
-13 neighbourhood_group_cleansed      0  
-14 source                            0  
+|field                        | pct_null|
+|:----------------------------|--------:|
+|calendar_updated             |    100.0|
+|price                        |     11.4|
+|estimated_revenue_l365d      |     11.4|
+|host_response_rate           |     11.0|
+|review_scores_rating         |      9.0|
+|review_scores_cleanliness    |      9.0|
+|review_scores_location       |      9.0|
+|host_acceptance_rate         |      5.8|
+|license                      |      5.7|
+|bathrooms_text               |      0.1|
+|estimated_occupancy_l365d    |      0.0|
+|neighbourhood_cleansed       |      0.0|
+|neighbourhood_group_cleansed |      0.0|
+|source                       |      0.0|
 
 ### By room type
-# A tibble: 4 × 2
-  room_type           n
-  <chr>           <int>
-1 Entire home/apt 19543
-2 Private room     5247
-3 Hotel room        264
-4 Shared room        36
+|room_type       |     n|
+|:---------------|-----:|
+|Entire home/apt | 19543|
+|Private room    |  5247|
+|Hotel room      |   264|
+|Shared room     |    36|
 
 ### By source (carry-over vs new)
-# A tibble: 2 × 2
-  source              n
-  <chr>           <int>
-1 city scrape     22231
-2 previous scrape  2859
+|source          |     n|
+|:---------------|-----:|
+|city scrape     | 22231|
+|previous scrape |  2859|
 
 ### Host listings count: calculated vs host (per brief)
-# A tibble: 1 × 5
-  n_listings both_known counts_match counts_differ max_abs_diff
-       <int>      <int>        <int>         <int>        <dbl>
-1      25090      25081        17474          7607         1621
+| n_listings| both_known| counts_match| counts_differ| max_abs_diff|
+|----------:|----------:|------------:|-------------:|------------:|
+|      25090|      25081|        17474|          7607|         1621|
 
 ### Top 15 neighbourhoods
-# A tibble: 15 × 2
-   neighbourhood_cleansed     n
-   <chr>                  <int>
- 1 Cannaregio              4622
- 2 Castello                4538
- 3 San Marco               2775
- 4 Piave 1860              2476
- 5 Dorsoduro               1941
- 6 San Polo                1792
- 7 Santa Croce             1700
- 8 Lido                     989
- 9 San Lorenzo XXV Aprile   653
-10 Marghera                 516
-11 Giudecca                 419
-12 Carpenedo                274
-13 Murano                   258
-14 Bissuola                 179
-15 Alberoni                 167
+|neighbourhood_cleansed |    n|
+|:----------------------|----:|
+|Cannaregio             | 4622|
+|Castello               | 4538|
+|San Marco              | 2775|
+|Piave 1860             | 2476|
+|Dorsoduro              | 1941|
+|San Polo               | 1792|
+|Santa Croce            | 1700|
+|Lido                   |  989|
+|San Lorenzo XXV Aprile |  653|
+|Marghera               |  516|
+|Giudecca               |  419|
+|Carpenedo              |  274|
+|Murano                 |  258|
+|Bissuola               |  179|
+|Alberoni               |  167|
 
 ## Reviews
 - Total (after dedup): **859691**

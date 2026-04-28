@@ -105,6 +105,10 @@ profile$reviews_dedup_dropped <- (nrow(reviews_jun) + nrow(reviews_sep)) - nrow(
 profile$reviews_date_range  <- range(ymd(reviews$date), na.rm = TRUE)
 
 
+md_table <- function(df) {
+  paste(knitr::kable(df, format = "pipe"), collapse = "\n")
+}
+
 md <- c(
   "# Data Profile Report — Venice Airbnb",
   paste0("_Generated: ", format(Sys.time(), "%Y-%m-%d %H:%M"), "_"),
@@ -117,25 +121,25 @@ md <- c(
   paste0("- Unique hosts (`host_id`): ", profile$unique_hosts),
   "",
   "### Scrape overlap",
-  paste(capture.output(print(profile$scrape_overlap)), collapse = "\n"),
+  md_table(profile$scrape_overlap),
   "",
   "### Price distribution after cleaning",
-  paste(capture.output(print(profile$price_stats)), collapse = "\n"),
+  md_table(profile$price_stats),
   "",
   "### NULL-rates (% null) for key fields",
-  paste(capture.output(print(profile$null_rates, n = Inf)), collapse = "\n"),
+  md_table(profile$null_rates),
   "",
   "### By room type",
-  paste(capture.output(print(profile$by_room_type)), collapse = "\n"),
+  md_table(profile$by_room_type),
   "",
   "### By source (carry-over vs new)",
-  paste(capture.output(print(profile$by_source)), collapse = "\n"),
+  md_table(profile$by_source),
   "",
   "### Host listings count: calculated vs host (per brief)",
-  paste(capture.output(print(profile$host_listings_compare)), collapse = "\n"),
+  md_table(profile$host_listings_compare),
   "",
   "### Top 15 neighbourhoods",
-  paste(capture.output(print(profile$top_neighbourhoods)), collapse = "\n"),
+  md_table(profile$top_neighbourhoods),
   "",
   "## Reviews",
   paste0("- Total (after dedup): **", profile$reviews_total, "**"),
