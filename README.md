@@ -14,54 +14,20 @@ Aналіз даних Airbnb для курсу [BUS220 (2026)](https://bus220-2
 ```
 .
 ├── Project.Rproj            # RStudio project file
-├── Project_clean_data.R     # скрипт очищення даних
+├── Project_clean_data.R     # скрипт очищення + профілювання даних
+├── profile_report.md        # звіт профілювання (генерується скриптом)
 ├── README.md
 └── .gitignore
 ```
 
+Запуск `Project_clean_data.R` створює локально (не комітяться):
+
+- `listings_clean.csv` — обʼєднані scrape-и June + September з полем `scrape_quarter`, очищеними `price`, `host_response_rate`, `host_acceptance_rate`, парсованим `bathrooms_text`, нормалізованими булевими полями, датами, та допоміжним `host_tier` (для зони Host Profiles). Це data source для Tableau.
+- `reviews_clean.csv` — обʼєднані reviews з обох scrape-ів (з дедуплікацією за `id`), розпарсена `date`, додані `review_year`/`review_month`. Підключається в Tableau до Listings за `listing_id` коли потрібен volume/timing для Guest Experience.
+- `profile_report.md` — числа для writeup: кількість listings/hosts, scrape overlap, NULL-rates, розподіл цін, top neighbourhoods, host tier breakdown, reviews date range. Цей файл **комітимо** в репо.
+
 > **Примітка:** CSV-файли з даними не зберігаються в репозиторії (через ліміт GitHub 100 MB на файл). Дивіться розділ нижче, як їх отримати.
 
-## Дані
-
-Сирі дані взяті з [Inside Airbnb](http://insideairbnb.com/get-the-data/) і опубліковані як **GitHub Release Assets** (бо reviews-файли перевищують 100 MB ліміт самого репозиторію):
-
-| Файл | Розмір |
-| --- | --- |
-| `listings-june.csv` | ~17 MB |
-| `listings-september.csv` | ~36 MB |
-| `reviews-june.csv` | ~255 MB |
-| `reviews-sept.csv` | ~268 MB |
-
-Завантажити можна зі сторінки [Releases](../../releases/latest) або однією командою:
-
-### Варіант 1. Через `curl`
-
-```bash
-BASE="https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download"
-for f in listings-june listings-september reviews-june reviews-sept; do
-  curl -L -o "${f}.csv" "${BASE}/${f}.csv"
-done
-```
-
-### Варіант 2. Прямо в R
-
-```r
-base  <- "https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download"
-files <- c("listings-june", "listings-september", "reviews-june", "reviews-sept")
-
-for (f in files) {
-  dest <- paste0(f, ".csv")
-  if (!file.exists(dest)) {
-    download.file(paste0(base, "/", dest), dest, mode = "wb")
-  }
-}
-```
-
-### Варіант 3. Через GitHub CLI
-
-```bash
-gh release download v1.0-data --repo BAAH2n/bus220-airbnb-venice-project
-```
 
 ## Як запустити
 
@@ -70,14 +36,11 @@ gh release download v1.0-data --repo BAAH2n/bus220-airbnb-venice-project
    git clone https://github.com/BAAH2n/bus220-airbnb-venice-project.git
    cd bus220-airbnb-venice-project
    ```
-2. Завантажте дані одним зі способів вище.
-3. Відкрийте `Project.Rproj` в RStudio.
-4. Встановіть залежності:
+2. Відкрийте `Project.Rproj` в RStudio.
+3. Встановіть залежності:
    ```r
-   install.packages(c("tidyverse", "readr", "dplyr", "stringr"))
+   install.packages(с("tidyverse"))
    ```
-5. Запустіть `Project_clean_data.R`. На виході отримаєте `listings.csv` для подальшої роботи в Tableau.
+4. Запустіть `Project_clean_data.R`. У папці зʼявляться `listings_clean.csv`, `reviews_clean.csv` і `profile_report.md`.
 
-## Команда
 
-Курс BUS220 — Business Intelligence and Analytics, КШЕ, 2 курс, 2 семестр.

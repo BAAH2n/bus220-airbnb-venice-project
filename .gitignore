@@ -1,10 +1,16 @@
 # ---- Data files (too large for GitHub) ----
 *.csv
+*.csv.gz
 *.tsv
 *.xlsx
 *.parquet
 data/
 raw/
+data-release/
+
+# ---- Tableau outputs (large) ----
+*.twbx
+*.hyper
 
 # ---- R / RStudio ----
 .Rproj.user/

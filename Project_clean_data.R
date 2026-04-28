@@ -1,28 +1,154 @@
-listings_sep <- read_csv("listings_sep.csv") 
+library(tidyverse)
+library(lubridate)
 
-listings_sep <-  listings_sep |> 
-  mutate(listing_file = "September") |> 
-  mutate(host_response_rate = str_remove(host_response_rate, "%"),
-         host_acceptance_rate = str_remove(host_acceptance_rate, "%"),
-         host_response_rate = as.double(na_if(host_response_rate, "N/A")),
-         host_acceptance_rate = as.double(na_if(host_acceptance_rate, "N/A")),
-         price = str_remove(price, "^\\$"),
-         price = as.double(str_remove(price, ","))) 
+clean_listings <- function(path, quarter) {
+  read_csv(path, show_col_types = FALSE) |>
+    mutate(
+      scrape_quarter = quarter,
+      price = price |>
+        str_remove_all("[$,]") |>
+        as.double(),
+      host_response_rate = host_response_rate |>
+        str_remove("%") |>
+        na_if("N/A") |>
+        as.double(),
+      host_acceptance_rate = host_acceptance_rate |>
+        str_remove("%") |>
+        na_if("N/A") |>
+        as.double(),
+      host_since   = ymd(host_since),
+      first_review = ymd(first_review),
+      last_review  = ymd(last_review),
+      last_scraped = ymd(last_scraped),
+      calendar_last_scraped = ymd(calendar_last_scraped)
+    )
+}
+
+listings_jun <- clean_listings("https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download/listings-june.csv",
+                               "June")
+listings_sep <- clean_listings("https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download/listings-september.csv",
+                               "September")
+
+listings <- bind_rows(listings_jun, listings_sep)
 
 
-listings_june <- read_csv("listings_june.csv") 
 
-listings_june <-  listings_june |> 
-  mutate(listing_file = "Jne") |> 
-  mutate(host_response_rate = str_remove(host_response_rate, "%"),
-         host_acceptance_rate = str_remove(host_acceptance_rate, "%"),
-         host_response_rate = as.double(na_if(host_response_rate, "N/A")),
-         host_acceptance_rate = as.double(na_if(host_acceptance_rate, "N/A")),
-         price = str_remove(price, "^\\$"),
-         price = as.double(str_remove(price, ",")))
+reviews_jun <- read_csv("https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download/reviews-june.csv")
+reviews_sep <- read_csv("https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download/reviews-sept.csv")
+
+reviews <- bind_rows(reviews_jun, reviews_sep) |>
+  distinct(id, .keep_all = TRUE)
 
 
-listings <- listings_sep |> 
-  union_all(listings_june)
+profile <- list()
 
-write_csv(listings, "listings.csv", na = "")
+profile$rows_total       <- nrow(listings)
+profile$rows_jun         <- nrow(listings_jun)
+profile$rows_sep         <- nrow(listings_sep)
+profile$unique_listings  <- n_distinct(listings$id)
+profile$unique_hosts     <- n_distinct(listings$host_id)
+
+profile$scrape_overlap <- listings |>
+  count(id, name = "appears_in") |>
+  count(appears_in, name = "n_listings") |>
+  mutate(label = if_else(appears_in == 2, "in both", "in one only"))
+
+profile$price_stats <- listings |>
+  summarise(
+    n_with_price = sum(!is.na(price)),
+    min   = min(price, na.rm = TRUE),
+    p25   = quantile(price, 0.25, na.rm = TRUE),
+    median = median(price, na.rm = TRUE),
+    mean  = mean(price, na.rm = TRUE),
+    p75   = quantile(price, 0.75, na.rm = TRUE),
+    p95   = quantile(price, 0.95, na.rm = TRUE),
+    p99   = quantile(price, 0.99, na.rm = TRUE),
+    max   = max(price, na.rm = TRUE)
+  )
+
+profile$null_rates <- listings |>
+  summarise(across(
+    c(price,
+      host_response_rate, host_acceptance_rate,
+      review_scores_rating, review_scores_cleanliness, review_scores_location,
+      estimated_occupancy_l365d, estimated_revenue_l365d,
+      license,
+      neighbourhood_cleansed, neighbourhood_group_cleansed,
+      calendar_updated,
+      bathrooms_text,
+      source),
+    ~ round(mean(is.na(.x)) * 100, 1),
+    .names = "{.col}"
+  )) |>
+  pivot_longer(everything(), names_to = "field", values_to = "pct_null") |>
+  arrange(desc(pct_null))
+
+profile$by_room_type     <- listings |> count(room_type, sort = TRUE)
+profile$by_source        <- listings |> count(source, sort = TRUE)
+profile$top_neighbourhoods <- listings |>
+  count(neighbourhood_cleansed, sort = TRUE) |>
+  slice_head(n = 15)
+
+profile$host_listings_compare <- listings |>
+  summarise(
+    n_listings   = n(),
+    both_known   = sum(!is.na(calculated_host_listings_count) & !is.na(host_listings_count)),
+    counts_match = sum(calculated_host_listings_count == host_listings_count, na.rm = TRUE),
+    counts_differ = sum(calculated_host_listings_count != host_listings_count, na.rm = TRUE),
+    max_abs_diff = max(abs(calculated_host_listings_count - host_listings_count), na.rm = TRUE)
+  )
+
+profile$reviews_total       <- nrow(reviews)
+profile$reviews_jun         <- nrow(reviews_jun)
+profile$reviews_sep         <- nrow(reviews_sep)
+profile$reviews_dedup_dropped <- (nrow(reviews_jun) + nrow(reviews_sep)) - nrow(reviews)
+profile$reviews_date_range  <- range(ymd(reviews$date), na.rm = TRUE)
+
+
+md <- c(
+  "# Data Profile Report — Venice Airbnb",
+  paste0("_Generated: ", format(Sys.time(), "%Y-%m-%d %H:%M"), "_"),
+  "",
+  "## Listings",
+  paste0("- Rows total: **", profile$rows_total, "**"),
+  paste0("  - June scrape: ", profile$rows_jun),
+  paste0("  - September scrape: ", profile$rows_sep),
+  paste0("- Unique listings (`id`): ", profile$unique_listings),
+  paste0("- Unique hosts (`host_id`): ", profile$unique_hosts),
+  "",
+  "### Scrape overlap",
+  paste(capture.output(print(profile$scrape_overlap)), collapse = "\n"),
+  "",
+  "### Price distribution after cleaning",
+  paste(capture.output(print(profile$price_stats)), collapse = "\n"),
+  "",
+  "### NULL-rates (% null) for key fields",
+  paste(capture.output(print(profile$null_rates, n = Inf)), collapse = "\n"),
+  "",
+  "### By room type",
+  paste(capture.output(print(profile$by_room_type)), collapse = "\n"),
+  "",
+  "### By source (carry-over vs new)",
+  paste(capture.output(print(profile$by_source)), collapse = "\n"),
+  "",
+  "### Host listings count: calculated vs host (per brief)",
+  paste(capture.output(print(profile$host_listings_compare)), collapse = "\n"),
+  "",
+  "### Top 15 neighbourhoods",
+  paste(capture.output(print(profile$top_neighbourhoods)), collapse = "\n"),
+  "",
+  "## Reviews",
+  paste0("- Total (after dedup): **", profile$reviews_total, "**"),
+  paste0("  - June scrape: ", profile$reviews_jun),
+  paste0("  - September scrape: ", profile$reviews_sep),
+  paste0("  - Duplicates removed (in both scrapes): ", profile$reviews_dedup_dropped),
+  paste0("- Date range: ",
+         format(profile$reviews_date_range[1]), " to ",
+         format(profile$reviews_date_range[2]))
+)
+writeLines(md, "profile_report.md")
+
+write_csv(listings, "listings_clean.csv", na = "")
+write_csv(reviews,  "reviews_clean.csv",  na = "")
+
+
