@@ -23,16 +23,45 @@ Aналіз даних Airbnb для курсу [BUS220 (2026)](https://bus220-2
 
 ## Дані
 
-Сирі дані взяті з [Inside Airbnb](http://insideairbnb.com/get-the-data/). Для відтворення потрібні файли:
+Сирі дані взяті з [Inside Airbnb](http://insideairbnb.com/get-the-data/) і опубліковані як **GitHub Release Assets** (бо reviews-файли перевищують 100 MB ліміт самого репозиторію):
 
 | Файл | Розмір |
 | --- | --- |
-| `listings-june.csv` | ~18 MB |
-| `listings-september.csv` | ~38 MB |
-| `reviews-june.csv` | ~268 MB |
-| `reviews-sept.csv` | ~282 MB |
+| `listings-june.csv` | ~17 MB |
+| `listings-september.csv` | ~36 MB |
+| `reviews-june.csv` | ~255 MB |
+| `reviews-sept.csv` | ~268 MB |
 
-Покладіть їх у корінь проєкту (поряд з `Project.Rproj`).
+Завантажити можна зі сторінки [Releases](../../releases/latest) або однією командою:
+
+### Варіант 1. Через `curl`
+
+```bash
+BASE="https://github.com/<your-username>/<repo-name>/releases/latest/download"
+for f in listings-june listings-september reviews-june reviews-sept; do
+  curl -L -o "${f}.csv" "${BASE}/${f}.csv"
+done
+```
+
+### Варіант 2. Прямо в R
+
+```r
+base  <- "https://github.com/<your-username>/<repo-name>/releases/latest/download"
+files <- c("listings-june", "listings-september", "reviews-june", "reviews-sept")
+
+for (f in files) {
+  dest <- paste0(f, ".csv")
+  if (!file.exists(dest)) {
+    download.file(paste0(base, "/", dest), dest, mode = "wb")
+  }
+}
+```
+
+### Варіант 3. Через GitHub CLI
+
+```bash
+gh release download v1.0-data --repo <your-username>/<repo-name>
+```
 
 ## Як запустити
 
@@ -41,7 +70,7 @@ Aналіз даних Airbnb для курсу [BUS220 (2026)](https://bus220-2
    git clone https://github.com/<your-username>/<repo-name>.git
    cd <repo-name>
    ```
-2. Завантажте CSV-файли з Inside Airbnb і покладіть у корінь проєкту.
+2. Завантажте дані одним зі способів вище.
 3. Відкрийте `Project.Rproj` в RStudio.
 4. Встановіть залежності:
    ```r
