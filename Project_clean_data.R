@@ -3,6 +3,7 @@ library(lubridate)
 
 clean_listings <- function(path, quarter) {
   read_csv(path, show_col_types = FALSE) |>
+    filter(last_scraped == max(last_scraped, na.rm = TRUE)) |>
     mutate(
       scrape_quarter = quarter,
       price = price |>
