@@ -1,0 +1,40 @@
+# ---- Data files (too large for GitHub) ----
+*.csv
+*.tsv
+*.xlsx
+*.parquet
+data/
+raw/
+
+# ---- R / RStudio ----
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Renviron
+*.Rcheck/
+
+# Knit / output
+*.utf8.md
+*.knit.md
+*.html
+*.pdf
+
+# ---- Tableau ----
+*.twbr
+*.tbm
+*.log
+Backup/
+~$*
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---- Editors ----
+.vscode/
+.idea/
+*.swp
+*~
