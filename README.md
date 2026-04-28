@@ -37,7 +37,7 @@ Aналіз даних Airbnb для курсу [BUS220 (2026)](https://bus220-2
 ### Варіант 1. Через `curl`
 
 ```bash
-BASE="https://github.com/<your-username>/<repo-name>/releases/latest/download"
+BASE="https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download"
 for f in listings-june listings-september reviews-june reviews-sept; do
   curl -L -o "${f}.csv" "${BASE}/${f}.csv"
 done
@@ -46,7 +46,7 @@ done
 ### Варіант 2. Прямо в R
 
 ```r
-base  <- "https://github.com/<your-username>/<repo-name>/releases/latest/download"
+base  <- "https://github.com/BAAH2n/bus220-airbnb-venice-project/releases/latest/download"
 files <- c("listings-june", "listings-september", "reviews-june", "reviews-sept")
 
 for (f in files) {
@@ -60,15 +60,15 @@ for (f in files) {
 ### Варіант 3. Через GitHub CLI
 
 ```bash
-gh release download v1.0-data --repo <your-username>/<repo-name>
+gh release download v1.0-data --repo BAAH2n/bus220-airbnb-venice-project
 ```
 
 ## Як запустити
 
 1. Склонуйте репозиторій:
    ```bash
-   git clone https://github.com/<your-username>/<repo-name>.git
-   cd <repo-name>
+   git clone https://github.com/BAAH2n/bus220-airbnb-venice-project.git
+   cd bus220-airbnb-venice-project
    ```
 2. Завантажте дані одним зі способів вище.
 3. Відкрийте `Project.Rproj` в RStudio.
