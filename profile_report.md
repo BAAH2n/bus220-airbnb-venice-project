@@ -1,5 +1,5 @@
 # Data Profile Report — Venice Airbnb
-_Generated: 2026-04-28 16:30_
+_Generated: 2026-04-28 17:53_
 
 ## Listings
 - Rows total: **16840**

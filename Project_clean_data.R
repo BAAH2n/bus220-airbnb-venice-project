@@ -153,7 +153,11 @@ md <- c(
 )
 writeLines(md, "profile_report.md")
 
-write_csv(listings, "listings_clean.csv", na = "")
-write_csv(reviews,  "reviews_clean.csv",  na = "")
+clean_text <- function(x) str_replace_all(x, "[\r\n\t]+", " ")
+listings <- listings |> mutate(across(where(is.character), clean_text))
+reviews  <- reviews  |> mutate(across(where(is.character), clean_text))
+
+write_csv(listings, "listings_clean.csv", na = "", quote = "all")
+write_csv(reviews,  "reviews_clean.csv",  na = "", quote = "all")
 
 
