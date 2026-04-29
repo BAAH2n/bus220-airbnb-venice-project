@@ -1,5 +1,5 @@
 # Data Profile Report — Venice Airbnb
-_Generated: 2026-04-28 17:53_
+_Generated: 2026-04-29 13:34_
 
 ## Listings
 - Rows total: **16840**
@@ -50,6 +50,14 @@ _Generated: 2026-04-28 17:53_
 |:---------------|-----:|
 |city scrape     | 14968|
 |previous scrape |  1872|
+
+### Host tier breakdown (September scrape, active listings only)
+|tier             | hosts| listings| % of supply|
+|:----------------|-----:|--------:|-----------:|
+|Single           |  2503|     2503|        29.1|
+|Small (2-5)      |  1072|     3008|        35.0|
+|Medium (6-20)    |   217|     2049|        23.9|
+|Commercial (21+) |    22|     1030|        12.0|
 
 ### Host listings count: calculated vs host (per brief)
 | n_listings| both_known| counts_match| counts_differ| max_abs_diff|

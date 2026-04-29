@@ -90,6 +90,29 @@ profile$top_neighbourhoods <- listings |>
   count(neighbourhood_cleansed, sort = TRUE) |>
   slice_head(n = 15)
 
+profile$host_tier_breakdown <- listings |>
+  filter(scrape_quarter == "September") |>
+  mutate(
+    tier = case_when(
+      is.na(calculated_host_listings_count)         ~ NA_character_,
+      calculated_host_listings_count == 1           ~ "Single",
+      calculated_host_listings_count <= 5           ~ "Small (2-5)",
+      calculated_host_listings_count <= 20          ~ "Medium (6-20)",
+      TRUE                                          ~ "Commercial (21+)"
+    ),
+    tier = factor(tier, levels = c("Single", "Small (2-5)", "Medium (6-20)", "Commercial (21+)"))
+  ) |>
+  group_by(tier) |>
+  summarise(
+    hosts    = n_distinct(host_id),
+    listings = n(),
+    .groups  = "drop"
+  ) |>
+  mutate(
+    `% of supply` = round(listings / sum(listings) * 100, 1)
+  ) |>
+  arrange(tier)
+
 profile$host_listings_compare <- listings |>
   summarise(
     n_listings   = n(),
@@ -135,6 +158,9 @@ md <- c(
   "",
   "### By source (carry-over vs new)",
   md_table(profile$by_source),
+  "",
+  "### Host tier breakdown (September scrape, active listings only)",
+  md_table(profile$host_tier_breakdown),
   "",
   "### Host listings count: calculated vs host (per brief)",
   md_table(profile$host_listings_compare),
