@@ -135,8 +135,6 @@ md_table <- function(df) {
 
 md <- c(
   "# Data Profile Report — Venice Airbnb",
-  paste0("_Generated: ", format(Sys.time(), "%Y-%m-%d %H:%M"), "_"),
-  "",
   "## Listings",
   paste0("- Rows total: **", profile$rows_total, "**"),
   paste0("  - June scrape: ", profile$rows_jun),

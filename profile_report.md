@@ -1,6 +1,4 @@
 # Data Profile Report — Venice Airbnb
-_Generated: 2026-04-29 13:34_
-
 ## Listings
 - Rows total: **16840**
   - June scrape: 8250
