@@ -52,10 +52,10 @@
 ### Host tier breakdown (September scrape, active listings only)
 |tier             | hosts| listings| % of supply|
 |:----------------|-----:|--------:|-----------:|
-|Single           |  2503|     2503|        29.1|
-|Small (2-5)      |  1072|     3008|        35.0|
-|Medium (6-20)    |   217|     2049|        23.9|
-|Commercial (21+) |    22|     1030|        12.0|
+|Single           |  2236|     2236|        29.0|
+|Small (2-5)      |  1018|     2697|        35.0|
+|Medium (6-20)    |   210|     1814|        23.5|
+|Commercial (21+) |    22|      958|        12.4|
 
 ### Host listings count: calculated vs host (per brief)
 | n_listings| both_known| counts_match| counts_differ| max_abs_diff|

@@ -91,7 +91,8 @@ profile$top_neighbourhoods <- listings |>
   slice_head(n = 15)
 
 profile$host_tier_breakdown <- listings |>
-  filter(scrape_quarter == "September") |>
+  filter(source != "previous scrape",
+         scrape_quarter == "September") |>
   mutate(
     tier = case_when(
       is.na(calculated_host_listings_count)         ~ NA_character_,
