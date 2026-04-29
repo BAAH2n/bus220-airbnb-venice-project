@@ -1,4 +1,12 @@
 # Data Profile Report — Venice Airbnb
+
+**Methodological note:** This profile reflects the **active subset** used in
+the Tableau dashboard — listings with `source = "city scrape"`. We exclude
+1,872 carryover entries (`source = "previous scrape"`) which have NULL
+price, revenue, and host_response_rate fields. Including these would bias
+performance metrics (median price, revenue, occupancy). Carryover entries
+are documented separately in Data Overview, sec 1.2.
+
 ## Listings
 - Rows total: **16840**
   - June scrape: 8250
